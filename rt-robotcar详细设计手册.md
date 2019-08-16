@@ -436,7 +436,7 @@
         {PS2_BTN_LEFT,                  CAR_CMD_LEFT},
         {PS2_BTN_CICLE,                 CAR_CMD_TURN_RIGHT},
         {PS2_BTN_SQUARE,                CAR_CMD_TURN_LEFT},
-  };
+	};
     ```
   
   - 控制映射到4个轮子的具体速度值：
