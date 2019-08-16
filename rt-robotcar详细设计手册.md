@@ -434,7 +434,7 @@
         {PS2_BTN_DOWN,                  CAR_CMD_BACK},
         {PS2_BTN_RIGHT,                 CAR_CMD_RIGHT},
         {PS2_BTN_LEFT,                  CAR_CMD_LEFT},
-      {PS2_BTN_CICLE,                 CAR_CMD_TURN_RIGHT},
+        {PS2_BTN_CICLE,                 CAR_CMD_TURN_RIGHT},
         {PS2_BTN_SQUARE,                CAR_CMD_TURN_LEFT},
   };
     ```
@@ -448,20 +448,22 @@
     {CAR_CMD_STOP,          { 0,      0,    0,    0}},
     {CAR_CMD_FORWARD_LEFT,  {   0,  120,  120,    0}},
     {CAR_CMD_FORWARD_RIGHT, { 120,    0,    0,  120}},
-    {CAR_CMD_BACK_LEFT,     {-120,    0,    0, -120}},
+    {CAR_CMD_BACK_LEFT,    	{-120,    0,    0, -120}},
     {CAR_CMD_BACK_RIGHT,    {   0, -120, -120,    0}}, 
     {CAR_CMD_FORWARD,       { 120,  120,  120,  120}},
     {CAR_CMD_BACK,          {-120, -120, -120, -120}},
     {CAR_CMD_RIGHT,         { 120, -120, -120,  120}},
     {CAR_CMD_LEFT,          {-120,  120,  120, -120}},
-  {CAR_CMD_TURN_RIGHT,    { 120, -120,  120, -120}},
-    {CAR_CMD_TURN_LEFT,     {-120,  120, -120,  120}},
+	{CAR_CMD_TURN_RIGHT,    { 120, -120,  120, -120}},
+    {CAR_CMD_TURN_LEFT,    	{-120,  120, -120,  120}},
     };
     ```
   
   - 再开一个线程定期刷新各个轮子的控制即可。
 
 ## 视频预览
+
+视频地址：https://v.youku.com/v_show/id_XNDMxNzQ4MDU1Mg==.html?spm=a2h0j.11185381.listitem_page1.5~A
 
 <video src="https://v.youku.com/v_show/id_XNDMxNzQ4MDU1Mg==.html?spm=a2h0j.11185381.listitem_page1.5~A"></video>
 ## 经验总结
