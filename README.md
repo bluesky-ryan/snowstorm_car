@@ -10,7 +10,7 @@
 
 ***3.RK3399 ROS系统部分代码地址***
 
-https://github.com/bluesky-ryan/snowstorm_ros_rk3399/tree/master
+*https://github.com/bluesky-ryan/snowstorm_ros_rk3399/tree/master*
 
 
 
@@ -470,7 +470,7 @@ https://github.com/bluesky-ryan/snowstorm_ros_rk3399/tree/master
 
 ## 视频预览
 
-PS2遥控小车视频地址：https://v.youku.com/v_show/id_XNDMxNzQ4MDU1Mg==.html?spm=a2h0j.11185381.listitem_page1.5~A
+PS2遥控小车视频地址：https://www.bilibili.com/video/BV1fU4y187hK/
 
 RK3399 ROS路径规划视频地址：https://www.bilibili.com/video/BV1By4y1x735
 
