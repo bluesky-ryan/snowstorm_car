@@ -10,7 +10,7 @@
 
 ***3.RK3399 ROS系统部分代码地址***
 
-*https://github.com/bluesky-ryan/snowstorm_ros_rk3399/tree/master*
+*https://github.com/bluesky-ryan/snowstorm_ros_rk3399*
 
 
 
