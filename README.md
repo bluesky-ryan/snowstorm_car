@@ -8,6 +8,12 @@
 
 *https://github.com/RT-Thread-packages/rt-robot*
 
+***3.RK3399 ROS系统部分代码地址***
+
+https://github.com/bluesky-ryan/snowstorm_ros_rk3399/tree/master
+
+
+
 ## 概述
 
 - 最近有幸参加了一期RT-Thread官方发起的rt-robot car DIY活动，跟着大神们的步伐我也成功的做出了一辆麦克纳姆轮PS2遥控车，心里非常的Happy，特意记录了这个制作过程用作给小白们借鉴。
@@ -99,15 +105,15 @@
 
   1. 关于BSP的移植RT-Thread官网有非常详细的文档描述：
 
-      https://github.com/RT-Thread/rt-thread/blob/master/bsp/stm32/docs/STM32系列BSP制作教程.md
+     https://github.com/RT-Thread/rt-thread/blob/master/bsp/stm32/docs/STM32系列BSP制作教程.md
 
   2. 移植过程不做累述，按照官方的步骤一步一步的走即可。
 
   3. 先只配置控制台串口和系统呼吸灯：
 
-      - console串口：UART2
+     - console串口：UART2
 
-      - 系统LED灯：PD2
+     - 系统LED灯：PD2
 
   
 
@@ -281,7 +287,7 @@
       
 
     - 第四步：通过Finsh控制台调试命令测试电机通道和PWM控制量
-  
+
       ![1565968683143](https://github.com/bluesky-ryan/snowstorm_car/blob/master/Image/pwm-set)
 
 - #### 编码器数据获取
@@ -313,23 +319,24 @@
           
           LOG_I("motor initialization completed.\r\n");
 
-    -  第三步：加入Finsh调试函数，旋转轮子查看编码值是否准确。（输入 motor_test -ge实时查看编码器值）
+    - 第三步：加入Finsh调试函数，旋转轮子查看编码值是否准确。（输入 motor_test -ge实时查看编码器值）
 
       ```
       MSH_CMD_EXPORT(motor_test, motor_test -ge/-q);
       ```
-	  
-		![1565968589135](https://github.com/bluesky-ryan/snowstorm_car/blob/master/Image/motor_test)
-	
+
+    ![1565968589135](https://github.com/bluesky-ryan/snowstorm_car/blob/master/Image/motor_test)
+
 - #### PID
 
   - 有了编码器作为反馈器，有了PWM作为控制器，那我们就可以加入PID控制器了。加入PID控制器的目的是精确控制轮子的速度，提供轮子的控制达到一致。
 
   - PID原理知识自行百度网上资料一大把，个人理解是：
+
     - 比例Kp: 粗调，大幅度调节控制量让测量值逼近理论值，但是由于单位较大无法精确到达理论值，有响应快，调节尺度大的特点。
     - 微分Kd: 状态预测，Kd控制的是速度的斜率相当于预测下一步速度的趋势，可以加快调节速度。
     - 积分Ki：细调， 通过微小的积分累加，让测量值不断逼近理论值，细调控制量让测量值逼近理论值。
-    
+
   - PID框图：
 
     ![img](https://github.com/bluesky-ryan/snowstorm_car/blob/master/Image/pid-ctr)
@@ -340,7 +347,7 @@
 
   ![img](https://github.com/bluesky-ryan/snowstorm_car/blob/master/Image/pid-company)
 
-  -  理论知识有了，按照公式做个具体实现就好了
+  - 理论知识有了，按照公式做个具体实现就好了
 
     第一步：实现增量PID刷新公式，具体查看源码（pid.c）
 
@@ -420,9 +427,9 @@
   - 车子方向控制图：
 
     ![麦克纳姆轮方向控制](https://github.com/bluesky-ryan/snowstorm_car/blob/master/Image/麦克纳姆轮方向控制.gif)
-  
+
   - 遥控映射到控制值：
-  
+
     ```
     /* PS映射car cmd表格，组合键命令在头添加，单键命令放后面 */
     car_ps2_cmd_t ps2_to_cmd_table[] = {
@@ -436,11 +443,11 @@
         {PS2_BTN_LEFT,                  CAR_CMD_LEFT},
         {PS2_BTN_CICLE,                 CAR_CMD_TURN_RIGHT},
         {PS2_BTN_SQUARE,                CAR_CMD_TURN_LEFT},
-	};
+    };
     ```
-  
+
   - 控制映射到4个轮子的具体速度值：
-  
+
     ```
     /* 命令映射到几何控制参数 */
     car_cmd_math_t cmd_to_math_table[] = {
@@ -454,21 +461,23 @@
     {CAR_CMD_BACK,          {-120, -120, -120, -120}},
     {CAR_CMD_RIGHT,         { 120, -120, -120,  120}},
     {CAR_CMD_LEFT,          {-120,  120,  120, -120}},
-	{CAR_CMD_TURN_RIGHT,    { 120, -120,  120, -120}},
+    {CAR_CMD_TURN_RIGHT,    { 120, -120,  120, -120}},
     {CAR_CMD_TURN_LEFT,    	{-120,  120, -120,  120}},
     };
     ```
-  
+
   - 再开一个线程定期刷新各个轮子的控制即可。
 
 ## 视频预览
 
-视频地址：https://v.youku.com/v_show/id_XNDMxNzQ4MDU1Mg==.html?spm=a2h0j.11185381.listitem_page1.5~A
+PS2遥控小车视频地址：https://v.youku.com/v_show/id_XNDMxNzQ4MDU1Mg==.html?spm=a2h0j.11185381.listitem_page1.5~A
+
+RK3399 ROS路径规划视频地址：https://www.bilibili.com/video/BV1By4y1x735
 
 <video src="https://v.youku.com/v_show/id_XNDMxNzQ4MDU1Mg==.html?spm=a2h0j.11185381.listitem_page1.5~A"></video>
+
 ## 经验总结
 
 - 电机控制电路设计上应该与控制板完全隔离，比如光耦隔离器件，避免电流压降造成主控不稳定。
 - 主控板需要有较强的抗大电流和抗干扰性，一块好的主板事半功倍，主动不稳定容易出现未知问题很难定位。
 - PDI控制环节速度应尽量使用瞬时速度，也就是说在保证精度的情况下刷新时间要尽量的短。
-
