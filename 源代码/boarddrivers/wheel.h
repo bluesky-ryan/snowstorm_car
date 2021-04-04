@@ -4,6 +4,8 @@
 #include <board.h>
 #include "pid.h"
 #include "motor.h"
+#include "kalman.h"
+#include "common.h"
 
 #define PI 3.1415926
 
@@ -18,13 +20,16 @@
 #define PID_KI_CH4B             0.2
 #define PID_KD_CH4B             0.01
 
-#define PID_KP_CH4F              0.765
-#define PID_KI_CH4F              0.33
-#define PID_KD_CH4F              0.1
+#define PID_KP_CH4F             0.765
+#define PID_KI_CH4F             0.33
+#define PID_KD_CH4F             0.1
 
 #define PID_LIMIT_MAX           80
 #define PID_LIMIT_MIN          -80
 #define PID_SAMPLE_TIM          10
+
+#define KALMAN_COV_R            0.1
+#define KALMAN_COV_Q            0
 
 
 #define CHX_PID_KX_TABLE      \
@@ -44,6 +49,7 @@ typedef struct
     int16_t         m_current_encode;       /* 当前编码计数值 */
     float           m_current_speed;        /* 当前车轮速度: m/s、rpm 、rps 单位根据实际使用而定 */
     float           m_target_speed;         /* 用户设置速度 */
+    KalmanInfo      m_kalman;               /* 卡尔曼滤波 */
 }wheel_t;
 
 typedef struct

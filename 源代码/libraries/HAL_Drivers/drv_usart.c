@@ -736,7 +736,7 @@ static void stm32_dma_config(struct rt_serial_device *serial, rt_ubase_t flag)
     HAL_NVIC_SetPriority(dma_config->dma_irq, 0, 0);
     HAL_NVIC_EnableIRQ(dma_config->dma_irq);
 
-    HAL_NVIC_SetPriority(uart->config->irq_type, 1, 0);
+    HAL_NVIC_SetPriority(uart->config->irq_type, 0, 0);
     HAL_NVIC_EnableIRQ(uart->config->irq_type);
 
     LOG_D("%s dma %s instance: %x", uart->config->name, flag == RT_DEVICE_FLAG_DMA_RX ? "RX" : "TX", DMA_Handle->Instance);

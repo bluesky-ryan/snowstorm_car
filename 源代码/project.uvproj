@@ -357,9 +357,9 @@
             <useXO>0</useXO>
             <VariousControls>
               <MiscControls />
-              <Define>USE_HAL_DRIVER, STM32F103xG</Define>
+              <Define>USE_HAL_DRIVER, STM32F103xG, RT_USING_ARM_LIBC</Define>
               <Undefine />
-              <IncludePath>.;rt-thread\include;applications;.;board;board\CubeMX_Config\Inc;libraries\HAL_Drivers;libraries\HAL_Drivers\config;boarddrivers;.;rt-thread\libcpu\arm\common;rt-thread\libcpu\arm\cortex-m3;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\finsh;libraries\STM32F1xx_HAL\CMSIS\Device\ST\STM32F1xx\Include;libraries\STM32F1xx_HAL\STM32F1xx_HAL_Driver\Inc;libraries\STM32F1xx_HAL\CMSIS\Include</IncludePath>
+              <IncludePath>.;rt-thread\include;applications;.;board;board\CubeMX_Config\Inc;libraries\HAL_Drivers;libraries\HAL_Drivers\config;boarddrivers;.;rt-thread\libcpu\arm\common;rt-thread\libcpu\arm\cortex-m3;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\finsh;rt-thread\components\libc\compilers\armlibc;rt-thread\components\libc\compilers\common;rt-thread\components\utilities\ulog;libraries\STM32F1xx_HAL\CMSIS\Device\ST\STM32F1xx\Include;libraries\STM32F1xx_HAL\STM32F1xx_HAL_Driver\Inc;libraries\STM32F1xx_HAL\CMSIS\Include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -535,9 +535,9 @@
           </Files>
           <Files>
             <File>
-              <FileName>startup_stm32f103x6.s</FileName>
+              <FileName>startup_stm32f103xg.s</FileName>
               <FileType>2</FileType>
-              <FilePath>libraries\STM32F1xx_HAL\CMSIS\Device\ST\STM32F1xx\Source\Templates\arm\startup_stm32f103x6.s</FilePath>
+              <FilePath>libraries\STM32F1xx_HAL\CMSIS\Device\ST\STM32F1xx\Source\Templates\arm\startup_stm32f103xg.s</FilePath>
             </File>
           </Files>
           <Files>
@@ -559,6 +559,13 @@
               <FileName>drv_hwtimer.c</FileName>
               <FileType>1</FileType>
               <FilePath>libraries\HAL_Drivers\drv_hwtimer.c</FilePath>
+            </File>
+          </Files>
+          <Files>
+            <File>
+              <FileName>drv_soft_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\HAL_Drivers\drv_soft_i2c.c</FilePath>
             </File>
           </Files>
           <Files>
@@ -604,6 +611,41 @@
               <FileName>ps2.c</FileName>
               <FileType>1</FileType>
               <FilePath>boarddrivers\ps2.c</FilePath>
+            </File>
+          </Files>
+          <Files>
+            <File>
+              <FileName>kalman.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>boarddrivers\kalman.c</FilePath>
+            </File>
+          </Files>
+          <Files>
+            <File>
+              <FileName>common.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>boarddrivers\common.c</FilePath>
+            </File>
+          </Files>
+          <Files>
+            <File>
+              <FileName>mpu9250.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>boarddrivers\mpu9250.c</FilePath>
+            </File>
+          </Files>
+          <Files>
+            <File>
+              <FileName>imu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>boarddrivers\imu.c</FilePath>
+            </File>
+          </Files>
+          <Files>
+            <File>
+              <FileName>ros_base_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>boarddrivers\ros_base_control.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -652,6 +694,27 @@
               <FileName>hwtimer.c</FileName>
               <FileType>1</FileType>
               <FilePath>rt-thread\components\drivers\hwtimer\hwtimer.c</FilePath>
+            </File>
+          </Files>
+          <Files>
+            <File>
+              <FileName>i2c_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\drivers\i2c\i2c_core.c</FilePath>
+            </File>
+          </Files>
+          <Files>
+            <File>
+              <FileName>i2c_dev.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\drivers\i2c\i2c_dev.c</FilePath>
+            </File>
+          </Files>
+          <Files>
+            <File>
+              <FileName>i2c-bit-ops.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\drivers\i2c\i2c-bit-ops.c</FilePath>
             </File>
           </Files>
           <Files>
@@ -834,6 +897,61 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>libc</GroupName>
+          <Files>
+            <File>
+              <FileName>libc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\libc\compilers\armlibc\libc.c</FilePath>
+            </File>
+          </Files>
+          <Files>
+            <File>
+              <FileName>mem_std.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\libc\compilers\armlibc\mem_std.c</FilePath>
+            </File>
+          </Files>
+          <Files>
+            <File>
+              <FileName>stubs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\libc\compilers\armlibc\stubs.c</FilePath>
+            </File>
+          </Files>
+          <Files>
+            <File>
+              <FileName>time.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\libc\compilers\armlibc\time.c</FilePath>
+            </File>
+          </Files>
+          <Files>
+            <File>
+              <FileName>gmtime_r.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\libc\compilers\common\gmtime_r.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Utilities</GroupName>
+          <Files>
+            <File>
+              <FileName>ulog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\utilities\ulog\ulog.c</FilePath>
+            </File>
+          </Files>
+          <Files>
+            <File>
+              <FileName>console_be.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\utilities\ulog\backend\console_be.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>STM32_HAL</GroupName>
           <Files>
             <File>
@@ -931,6 +1049,13 @@
               <FileName>stm32f1xx_hal_usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>libraries\STM32F1xx_HAL\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_usart.c</FilePath>
+            </File>
+          </Files>
+          <Files>
+            <File>
+              <FileName>stm32f1xx_hal_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\STM32F1xx_HAL\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_i2c.c</FilePath>
             </File>
           </Files>
           <Files>

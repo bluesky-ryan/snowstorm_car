@@ -116,7 +116,7 @@ static void moto_pwm_init(void)
 	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
 	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
 
-    LOG_I("motor pwm initialization ok.\r\n");
+    LOG_I("motor pwm initialization ok.");
     
 }
 
@@ -131,7 +131,7 @@ static void motor_gpio_init(void)
     rt_pin_irq_enable(ENCODE_1A_PIN, RT_TRUE);
     rt_pin_irq_enable(ENCODE_1B_PIN, RT_TRUE); 
 
-    LOG_I("motor gpio initialization ok.\r\n");
+    LOG_I("motor gpio initialization ok.");
 }
 
 /**
@@ -180,7 +180,7 @@ static void motor_encode2_init(void)
   /* USER CODE BEGIN TIM3_Init 2 */
 
   /* USER CODE END TIM3_Init 2 */
-  LOG_I("motor encode2 initialization ok.\r\n");
+  LOG_I("motor encode2 initialization ok.");
 
 }
 
@@ -230,7 +230,7 @@ static void motor_encode3_init(void)
   /* USER CODE BEGIN TIM4_Init 2 */
 
   /* USER CODE END TIM4_Init 2 */
-    LOG_I("motor encode3 initialization ok.\r\n");
+    LOG_I("motor encode3 initialization ok.");
 }
 
 /**
@@ -279,7 +279,7 @@ static void motor_encode4_init(void)
   /* USER CODE BEGIN TIM5_Init 2 */
 
   /* USER CODE END TIM5_Init 2 */
-  LOG_I("motor encode4 initialization ok.\r\n");
+  LOG_I("motor encode4 initialization ok.");
 }
 
 static void motor_encode_enable(void)
@@ -335,7 +335,7 @@ int motor_init(void)
     motor_encode4_init();
     motor_encode_enable();
 
-    LOG_I("motor initialization completed.\r\n");
+    LOG_I("motor initialization OK.");
 	
 	return RT_EOK;
 }
@@ -585,7 +585,7 @@ static void motor_test_entry(void *parameter)
             {
                 rt_thread_delete(m_test.thread);
                 m_test.thread = RT_NULL;
-                LOG_I("motor test process deleted!\r\n");
+                LOG_I("motor test process deleted!");
             }
             
         }

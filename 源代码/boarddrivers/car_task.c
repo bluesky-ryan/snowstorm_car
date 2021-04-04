@@ -1,3 +1,31 @@
+/*==========================================================================
+* 车轮编号和方向
+*
+*        ||      x       ||
+*      1 ||      ^       || 2
+*        ||      |       ||
+*                |
+*                |----->y
+*
+*        ||              ||
+*      3 ||              || 4
+*        ||              ||
+*        
+*===========================================================================
+*速度测量公式:
+*   Vx = (V1+V2+V2+V4)/4
+*   Vy = (V1+V4-V2-V3)/4
+*   W  = (V2+V4-V1-V3)/(4(a+b))
+*   注: a=L13/2 b=L12/2 
+*===========================================================================
+*运动学方程
+*   V1 = Vx+Vy-W(a+b)
+*   V2 = Vx-Vy+W(a+b)
+*   V3 = Vx-Vy-W(a+b)
+*   V4 = Vx+Vy+W(a+b)
+============================================================================*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -5,11 +33,12 @@
 #include "pid.h"
 #include "wheel.h"
 #include "ps2.h"
+#include "common.h"
 
 #define MOTOR_TASK_TACK_SIZE    1048
 #define MOTOR_TASK_PRIORITY     3
 #define MOTOR_TASK_TICK         100
-
+#define MOTOR_SPEEK_RPM         150
 
 typedef enum
 {
@@ -50,6 +79,13 @@ typedef struct
 }car_cmd_math_t;
 
 
+car_ros_cmd_t g_ros_cmd_msg = {
+    .enable     = RT_FALSE,
+    .cur_time   = 0,
+    .vel        = {0,0,0},
+};
+
+
 typedef struct
 {
     rt_thread_t   h_thread;
@@ -77,18 +113,18 @@ car_ps2_cmd_t ps2_to_cmd_table[] = {
 
 /* 命令映射到几何控制参数 */
 car_cmd_math_t cmd_to_math_table[] = {
-    {CAR_CMD_INVALID,           {   0,     0,      0,      0}},
-    {CAR_CMD_STOP,              {   0,     0,      0,      0}},
-    {CAR_CMD_FORWARD_LEFT,      {   0,   120,    120,      0}},
-    {CAR_CMD_FORWARD_RIGHT,     { 120,     0,      0,    120}},
-    {CAR_CMD_BACK_LEFT,         {-120,     0,      0,   -120}},
-    {CAR_CMD_BACK_RIGHT,        {   0,  -120,   -120,      0}}, 
-    {CAR_CMD_FORWARD,           { 120,   120,    120,    120}},
-    {CAR_CMD_BACK,              {-120,  -120,   -120,   -120}},
-    {CAR_CMD_RIGHT,             { 120,  -120,   -120,    120}},
-    {CAR_CMD_LEFT,              {-120,   120,    120,   -120}},
-    {CAR_CMD_TURN_RIGHT,        { 120,  -120,    120,   -120}},
-    {CAR_CMD_TURN_LEFT,         {-120,   120,   -120,    120}},
+    {CAR_CMD_INVALID,       {               0,                0,                0,                0}},
+    {CAR_CMD_STOP,          {               0,                0,                0,                0}},
+    {CAR_CMD_FORWARD_LEFT,  {               0,  MOTOR_SPEEK_RPM,  MOTOR_SPEEK_RPM,                0}},
+    {CAR_CMD_FORWARD_RIGHT, { MOTOR_SPEEK_RPM,                0,                0,  MOTOR_SPEEK_RPM}},
+    {CAR_CMD_BACK_LEFT,     {-MOTOR_SPEEK_RPM,                0,                0, -MOTOR_SPEEK_RPM}},
+    {CAR_CMD_BACK_RIGHT,    {               0, -MOTOR_SPEEK_RPM, -MOTOR_SPEEK_RPM,                0}}, 
+    {CAR_CMD_FORWARD,       { MOTOR_SPEEK_RPM,  MOTOR_SPEEK_RPM,  MOTOR_SPEEK_RPM,  MOTOR_SPEEK_RPM}},
+    {CAR_CMD_BACK,          {-MOTOR_SPEEK_RPM, -MOTOR_SPEEK_RPM, -MOTOR_SPEEK_RPM, -MOTOR_SPEEK_RPM}},
+    {CAR_CMD_RIGHT,         { MOTOR_SPEEK_RPM, -MOTOR_SPEEK_RPM, -MOTOR_SPEEK_RPM,  MOTOR_SPEEK_RPM}},
+    {CAR_CMD_LEFT,          {-MOTOR_SPEEK_RPM,  MOTOR_SPEEK_RPM,  MOTOR_SPEEK_RPM, -MOTOR_SPEEK_RPM}},
+    {CAR_CMD_TURN_RIGHT,    { MOTOR_SPEEK_RPM, -MOTOR_SPEEK_RPM,  MOTOR_SPEEK_RPM, -MOTOR_SPEEK_RPM}},
+    {CAR_CMD_TURN_LEFT,     {-MOTOR_SPEEK_RPM,  MOTOR_SPEEK_RPM, -MOTOR_SPEEK_RPM,  MOTOR_SPEEK_RPM}},
 };
 
 /**
@@ -152,6 +188,10 @@ static void motor_task_entry(void *parameter)
 {
     car_ctl_t   *p_car      = (car_ctl_t *)parameter;
     int16_t     pwm         = 0;
+    double      waveman[3]  = {0};
+    car_cmd     cur_cmd;
+    sensor_msg  msg;
+    
     /* 电机初始化 */
     motor_init();
 
@@ -171,11 +211,36 @@ static void motor_task_entry(void *parameter)
     while(1)
     {
         /* 速度设置刷新 */
-        car_cmd_to_math(car_ps2_cmd_get(), &p_car->cur_math);
+        cur_cmd = car_ps2_cmd_get();
+        car_cmd_to_math(cur_cmd, &p_car->cur_math);
         p_car->m_wheel[0].m_target_speed = p_car->cur_math.ch1_speed;
         p_car->m_wheel[1].m_target_speed = p_car->cur_math.ch2_speed;
         p_car->m_wheel[2].m_target_speed = p_car->cur_math.ch3_speed;
         p_car->m_wheel[3].m_target_speed = p_car->cur_math.ch4_speed;
+
+        /*
+        *设置ROS控制速度 
+        *V1 = Vx+Vy-W(a+b) ==> rmp = (Vx+Vy-W(a+b)) * 60 /(2 * pi * r)
+        *V2 = Vx-Vy+W(a+b) ==> rmp = (Vx-Vy+W(a+b)) * 60 /(2 * pi * r)
+        *V3 = Vx-Vy-W(a+b) ==> rmp = (Vx-Vy-W(a+b)) * 60 /(2 * pi * r)
+        *V4 = Vx+Vy+W(a+b) ==> rmp = (Vx+Vy+W(a+b)) * 60 /(2 * pi * r)
+        */
+        if (g_ros_cmd_msg.enable == RT_TRUE)
+        {
+            p_car->m_wheel[0].m_target_speed = ((g_ros_cmd_msg.vel.x+g_ros_cmd_msg.vel.y-g_ros_cmd_msg.vel.z*0.17)/0.0031415926);
+            p_car->m_wheel[1].m_target_speed = ((g_ros_cmd_msg.vel.x-g_ros_cmd_msg.vel.y+g_ros_cmd_msg.vel.z*0.17)/0.0031415926);
+            p_car->m_wheel[2].m_target_speed = ((g_ros_cmd_msg.vel.x-g_ros_cmd_msg.vel.y-g_ros_cmd_msg.vel.z*0.17)/0.0031415926);
+            p_car->m_wheel[3].m_target_speed = ((g_ros_cmd_msg.vel.x+g_ros_cmd_msg.vel.y+g_ros_cmd_msg.vel.z*0.17)/0.0031415926);
+            if((rt_tick_get() - g_ros_cmd_msg.cur_time) > rt_tick_from_millisecond(300)) {
+                p_car->m_wheel[0].m_target_speed = 0;
+                p_car->m_wheel[1].m_target_speed = 0;
+                p_car->m_wheel[2].m_target_speed = 0;
+                p_car->m_wheel[3].m_target_speed = 0;
+                g_ros_cmd_msg.cur_time = 0;
+                g_ros_cmd_msg.enable = RT_FALSE;
+            }
+        }
+          
         
         /* 速度刷新 */
         if((rt_tick_get() - p_car->vct_last_time) > rt_tick_from_millisecond(p_car->vct_sample_time))
@@ -183,7 +248,7 @@ static void motor_task_entry(void *parameter)
             /* 通道1速度刷新 */
             motor_encode_chx_get(p_car->m_wheel[0].m_motor_ch, &p_car->m_wheel[0].m_current_encode);
             p_car->m_wheel[0].m_current_speed = wheel_encode_to_rpm(p_car->m_wheel[0].m_current_encode, (uint32_t)p_car->vct_last_time, (uint32_t)rt_tick_get());
-
+            
             /* 通道2速度刷新 */
             motor_encode_chx_get(p_car->m_wheel[1].m_motor_ch, &p_car->m_wheel[1].m_current_encode);
             p_car->m_wheel[1].m_current_speed = wheel_encode_to_rpm(p_car->m_wheel[1].m_current_encode, (uint32_t)p_car->vct_last_time, (uint32_t)rt_tick_get());
@@ -228,6 +293,14 @@ static void motor_task_entry(void *parameter)
             
             p_car->pid_last_time = rt_tick_get();
         }
+
+        /* 发布ROS速度消息 */
+        msg.x = (p_car->m_wheel[0].m_current_speed +p_car->m_wheel[1].m_current_speed+
+                 p_car->m_wheel[2].m_current_speed+p_car->m_wheel[3].m_current_speed)*0.0031415926/4;
+        msg.y = (p_car->m_wheel[0].m_current_speed +p_car->m_wheel[3].m_current_speed-
+                 p_car->m_wheel[1].m_current_speed-p_car->m_wheel[2].m_current_speed)*0.0031415926/4;
+        msg.z = 0;
+        send_pack(ROS_DATA_VEL, &msg, sizeof(sensor_msg));
         
         rt_thread_mdelay(10);
     }

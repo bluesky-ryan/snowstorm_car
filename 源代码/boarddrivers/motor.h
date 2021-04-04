@@ -17,7 +17,7 @@ typedef enum {
     MOTOR_CH4     =      TIM_CHANNEL_4,
 }motor_chx;
 
-#define MOTOR_PWM_MAX       100
+#define MOTOR_PWM_MAX       120
 
 
 typedef struct {

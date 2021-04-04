@@ -216,6 +216,7 @@
           <name>CCDefines</name>
           <state />
           <state>STM32F103xG</state>
+          <state>RT_USING_DLIBC</state>
           <state>USE_HAL_DRIVER</state>
         </option>
         <option>
@@ -351,12 +352,15 @@
           <state>$PROJ_DIR$\rt-thread\components\finsh</state>
           <state>$PROJ_DIR$\.</state>
           <state>$PROJ_DIR$\applications</state>
+          <state>$PROJ_DIR$\rt-thread\components\libc\compilers\dlib</state>
           <state>$PROJ_DIR$\rt-thread\components\drivers\include</state>
           <state>$PROJ_DIR$\board</state>
           <state>$PROJ_DIR$\libraries\STM32F1xx_HAL\STM32F1xx_HAL_Driver\Inc</state>
-          <state>$PROJ_DIR$\board\CubeMX_Config\Inc</state>
           <state>$PROJ_DIR$\libraries\STM32F1xx_HAL\CMSIS\Include</state>
+          <state>$PROJ_DIR$\board\CubeMX_Config\Inc</state>
           <state>$PROJ_DIR$\libraries\STM32F1xx_HAL\CMSIS\Device\ST\STM32F1xx\Include</state>
+          <state>$PROJ_DIR$\rt-thread\components\libc\compilers\common</state>
+          <state>$PROJ_DIR$\rt-thread\components\utilities\ulog</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1247,6 +1251,7 @@
           <name>CCDefines</name>
           <state />
           <state>STM32F103xG</state>
+          <state>RT_USING_DLIBC</state>
           <state>USE_HAL_DRIVER</state>
         </option>
         <option>
@@ -1382,12 +1387,15 @@
           <state>$PROJ_DIR$\rt-thread\components\finsh</state>
           <state>$PROJ_DIR$\.</state>
           <state>$PROJ_DIR$\applications</state>
+          <state>$PROJ_DIR$\rt-thread\components\libc\compilers\dlib</state>
           <state>$PROJ_DIR$\rt-thread\components\drivers\include</state>
           <state>$PROJ_DIR$\board</state>
           <state>$PROJ_DIR$\libraries\STM32F1xx_HAL\STM32F1xx_HAL_Driver\Inc</state>
-          <state>$PROJ_DIR$\board\CubeMX_Config\Inc</state>
           <state>$PROJ_DIR$\libraries\STM32F1xx_HAL\CMSIS\Include</state>
+          <state>$PROJ_DIR$\board\CubeMX_Config\Inc</state>
           <state>$PROJ_DIR$\libraries\STM32F1xx_HAL\CMSIS\Device\ST\STM32F1xx\Include</state>
+          <state>$PROJ_DIR$\rt-thread\components\libc\compilers\common</state>
+          <state>$PROJ_DIR$\rt-thread\components\utilities\ulog</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -2125,7 +2133,7 @@
       <name>$PROJ_DIR$\board\CubeMX_Config\Src\stm32f1xx_hal_msp.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\libraries\STM32F1xx_HAL\CMSIS\Device\ST\STM32F1xx\Source\Templates\iar\startup_stm32f103x6.s</name>
+      <name>$PROJ_DIR$\libraries\STM32F1xx_HAL\CMSIS\Device\ST\STM32F1xx\Source\Templates\iar\startup_stm32f103xg.s</name>
     </file>
     <file>
       <name>$PROJ_DIR$\libraries\HAL_Drivers\drv_gpio.c</name>
@@ -2135,6 +2143,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\libraries\HAL_Drivers\drv_hwtimer.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\libraries\HAL_Drivers\drv_soft_i2c.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\libraries\HAL_Drivers\drv_common.c</name>
@@ -2156,6 +2167,21 @@
     </file>
     <file>
       <name>$PROJ_DIR$\boarddrivers\ps2.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\boarddrivers\kalman.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\boarddrivers\common.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\boarddrivers\mpu9250.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\boarddrivers\imu.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\boarddrivers\ros_base_control.c</name>
     </file>
   </group>
   <group>
@@ -2180,6 +2206,15 @@
     <name>DeviceDrivers</name>
     <file>
       <name>$PROJ_DIR$\rt-thread\components\drivers\hwtimer\hwtimer.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\drivers\i2c\i2c_core.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\drivers\i2c\i2c_dev.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\drivers\i2c\i2c-bit-ops.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\rt-thread\components\drivers\misc\pin.c</name>
@@ -2261,6 +2296,60 @@
     </file>
   </group>
   <group>
+    <name>libc</name>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\libc\compilers\common\gmtime_r.c</name>
+    </file>
+  </group>
+  <group>
+    <name>dlib</name>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\libc\compilers\dlib\environ.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\libc\compilers\dlib\libc.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\libc\compilers\dlib\rmtx.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\libc\compilers\dlib\stdio.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\libc\compilers\dlib\syscall_close.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\libc\compilers\dlib\syscall_lseek.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\libc\compilers\dlib\syscall_mem.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\libc\compilers\dlib\syscall_open.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\libc\compilers\dlib\syscall_read.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\libc\compilers\dlib\syscall_remove.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\libc\compilers\dlib\syscall_write.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\libc\compilers\dlib\time.c</name>
+    </file>
+  </group>
+  <group>
+    <name>Utilities</name>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\utilities\ulog\ulog.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\rt-thread\components\utilities\ulog\backend\console_be.c</name>
+    </file>
+  </group>
+  <group>
     <name>STM32_HAL</name>
     <file>
       <name>$PROJ_DIR$\libraries\STM32F1xx_HAL\CMSIS\Device\ST\STM32F1xx\Source\Templates\system_stm32f1xx.c</name>
@@ -2303,6 +2392,9 @@
     </file>
     <file>
       <name>$PROJ_DIR$\libraries\STM32F1xx_HAL\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_usart.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\libraries\STM32F1xx_HAL\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_i2c.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\libraries\STM32F1xx_HAL\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_tim.c</name>

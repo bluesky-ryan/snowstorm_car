@@ -12,6 +12,13 @@ if GetDepend(['BSP_USING_MOTOR']):
 	src += ['car_task.c']
 	src += ['wheel.c']
 	src += ['ps2.c']
+	src += ['kalman.c']
+	src += ['common.c']
+if GetDepend(['BSP_USING_MUP9250']):
+	src += ['mpu9250.c']
+	src += ['imu.c']
+if GetDepend(['BSP_USING_ROS_BASE_CTL']):
+	src += ['ros_base_control.c']
 
 group = DefineGroup('BoardDriver', src, depend = [''], CPPPATH = CPPPATH)
 

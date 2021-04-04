@@ -1,5 +1,5 @@
 #include "pid.h"
-
+#include "common.h"
 
 #define DBG_SECTION_NAME  "pid"
 #define DBG_LEVEL         DBG_LOG
@@ -153,8 +153,16 @@ float pid_update(pid_control_t* pid, float measure_value)
     }
 
     pid->p_error = pid->kp * pid->error;
-    pid->i_error = pid->ki * pid->integral;
     pid->d_error = pid->kd * (pid->error - 2 * pid->error_l + pid->error_ll);
+    /* 设定值不足最大值/最小值1/3时，不进行积分 */
+    if (pid->target_point > pid->maximum/10 || pid->target_point < pid->minimum/10)
+    {
+         pid->i_error = pid->ki * pid->integral;
+    }
+    else
+    {
+        pid->i_error = 0;
+    }
 
     pid->out = pid->p_error + pid->i_error + pid->d_error;
     if (pid->out > pid->maximum)
@@ -175,20 +183,9 @@ float pid_update(pid_control_t* pid, float measure_value)
     waveform[0] = measure_value;
     waveform[1] = pid->target_point;
     waveform[2] = pid->out;
-    send_waveform_fomate(waveform, sizeof(waveform));
+//    send_waveform_fomate(waveform, sizeof(waveform));
     
     return pid->out;
 }
 
-rt_err_t send_waveform_fomate(void *buf, uint32_t size)
-{
-    const char start[2] = {0x03, 0xfc};
-    const char end[2]   = {0xfc, 0x03};
-    rt_device_t console = rt_console_get_device();
-    
-    rt_device_write(console, -1, start, 2);
-    rt_device_write(console, -1, buf, size);
-    rt_device_write(console, -1, end, 2);
 
-    return RT_EOK;
-}

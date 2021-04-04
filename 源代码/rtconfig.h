@@ -81,6 +81,8 @@
 #define RT_SERIAL_USING_DMA
 #define RT_SERIAL_RB_BUFSZ 64
 #define RT_USING_HWTIMER
+#define RT_USING_I2C
+#define RT_USING_I2C_BITOPS
 #define RT_USING_PIN
 
 /* Using Hardware Crypto drivers */
@@ -94,6 +96,7 @@
 
 /* POSIX layer and C standard library */
 
+#define RT_USING_LIBC
 
 /* Network */
 
@@ -114,6 +117,22 @@
 
 /* Utilities */
 
+#define RT_USING_ULOG
+#define ULOG_OUTPUT_LVL_D
+#define ULOG_OUTPUT_LVL 7
+#define ULOG_USING_ISR_LOG
+#define ULOG_ASSERT_ENABLE
+#define ULOG_LINE_BUF_SIZE 128
+
+/* log format */
+
+#define ULOG_OUTPUT_FLOAT
+#define ULOG_USING_COLOR
+#define ULOG_OUTPUT_TIME
+#define ULOG_OUTPUT_LEVEL
+#define ULOG_OUTPUT_TAG
+#define ULOG_BACKEND_USING_CONSOLE
+#define ULOG_USING_FILTER
 
 /* RT-Thread online packages */
 
@@ -164,17 +183,27 @@
 
 /* Hardware Drivers Config */
 
-#define SOC_STM32F103RC
+#define SOC_STM32F103RB
 
 /* Onboard Peripheral Drivers */
 
 #define BSP_USING_MOTOR
+#define BSP_USING_MUP9250
+#define BSP_USING_ROS_BASE_CTL
 
 /* On-chip Peripheral Drivers */
 
 #define BSP_USING_GPIO
 #define BSP_USING_UART
 #define BSP_USING_UART2
+#define BSP_USING_UART4
+#define BSP_USING_I2C
+#define BSP_USING_I2C1
+
+/* Notice: PB8 --> 24; PB9 --> 25 */
+
+#define BSP_I2C1_SCL_PIN 24
+#define BSP_I2C1_SDA_PIN 25
 
 /* Board extended module Drivers */
 

@@ -1,7 +1,7 @@
 #include "wheel.h"
 #include "pid.h"
 #include <math.h>
-
+#include "common.h"
 
 wheel_chx_pid_t chx_pid_kx_table[] = CHX_PID_KX_TABLE;
 
@@ -31,7 +31,8 @@ void wheel_init(wheel_t *wheel, motor_chx motor_chx)
     else
         pid_init(&wheel->m_pid, PID_KP_VALUE, PID_KI_VALUE, PID_KD_VALUE, PID_LIMIT_MAX, PID_LIMIT_MIN, PID_SAMPLE_TIM);
     
-    
+    /* 初始化卡尔曼滤波 */
+    Init_KalmanInfo(&wheel->m_kalman, KALMAN_COV_Q, KALMAN_COV_R);
 }
 
 /**
@@ -78,7 +79,7 @@ float wheel_encode_to_velocity(int16_t encode, uint32_t start_time, uint32_t end
         return 0.0f;
     
     /* velocity = (encode / used_time) * 1000 * 2PI * (60 / 1000) 单位: m/s */
-    velocity = ((float)(encode / used_time) * 2 * PI * 60) / WHEEL_CIRCLE_ENCODE;
+    velocity = ((float)(encode / used_time) * 2 * PI * 60) / WHEEL_CIRCLE_ENCODE;  
 
     return velocity; 
 }

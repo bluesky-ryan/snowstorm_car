@@ -41,7 +41,6 @@ rt_inline void i2c_delay2(struct rt_i2c_bit_ops *ops)
 static rt_err_t SCL_H(struct rt_i2c_bit_ops *ops)
 {
     rt_tick_t start;
-
     SET_SCL(ops, 1);
 
     if (!ops->get_scl)
